@@ -47,8 +47,4 @@ Edge cases handled:
 - ♿ Keyboard accessibility & ARIA attributes
 - 🧪 Unit tests (Jest + DOM testing)
 
-📜 License
-
-🤝 Contributing
-
 ⭐ **Star this repo if you found it helpful!**
