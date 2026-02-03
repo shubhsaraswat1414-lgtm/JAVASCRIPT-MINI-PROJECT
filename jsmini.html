@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Board</title>
+
+    <style>
+        *{
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        /* ===== BACKGROUND ===== */
+        body{
+            margin: 0;
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at top left, #f472b6, transparent 40%),
+                radial-gradient(circle at bottom right, #38bdf8, transparent 45%),
+                linear-gradient(135deg, #0f172a, #020617);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #f8fafc;
+        }
+
+        /* ===== TITLE ===== */
+        h1{
+            margin: 30px 0 20px;
+            font-size: 2.6rem;
+            letter-spacing: 1px;
+            color: #facc15;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.6);
+        }
+
+        /* ===== INPUT AREA ===== */
+        .control{
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(14px);
+            padding: 18px 22px;
+            border-radius: 18px;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.5);
+            margin-bottom: 35px;
+        }
+
+        .control input{
+            padding: 12px;
+            width: 260px;
+            border: none;
+            outline: none;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        .control button{
+            padding: 12px 22px;
+            margin-left: 8px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #22c55e, #4ade80);
+            color: #022c22;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .control button:hover{
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(34,197,94,0.6);
+        }
+
+        /* ===== BOARD ===== */
+        .board{
+            display: flex;
+            gap: 28px;
+            padding-bottom: 40px;
+        }
+
+        /* ===== COLUMNS ===== */
+        .column{
+            width: 300px;
+            min-height: 450px;
+            padding: 15px;
+            border-radius: 20px;
+            background:
+                linear-gradient(160deg, #1e293b, #020617);
+            box-shadow: 0 14px 40px rgba(0,0,0,0.7);
+            transition: 0.3s;
+        }
+
+        .column:hover{
+            transform: translateY(-8px);
+        }
+
+        .column h2{
+            text-align: center;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        /* Different column colors */
+        .column:nth-child(1) h2{ color: #38bdf8; }
+        .column:nth-child(2) h2{ color: #f472b6; }
+        .column:nth-child(3) h2{ color: #4ade80; }
+
+        /* ===== TASK CARD ===== */
+        .task{
+            background:
+                linear-gradient(135deg, #475569, #334155);
+            padding: 12px 14px;
+            margin-bottom: 12px;
+            border-radius: 14px;
+            cursor: grab;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn{
+            from{opacity: 0; transform: scale(0.9);}
+            to{opacity: 1; transform: scale(1);}
+        }
+
+        .task:hover{
+            background:
+                linear-gradient(135deg, #64748b, #475569);
+        }
+
+        /* ===== DELETE ===== */
+        .delete{
+            color: #fb7185;
+            font-weight: bold;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        /* ===== DRAG EFFECT ===== */
+        .column.drag-over{
+            outline: 3px dashed #facc15;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>✨Task Board✨ </h1>
+
+    <div class="control">
+        <input type="text" id="taskInput" placeholder="Enter your task">
+        <button onclick="addTask()">Add Task</button>
+    </div>
+
+    <div class="board">
+        <div class="column" ondragover="allowDrop(event)" ondrop="drop(event)">
+            <h2>To Do</h2>
+        </div>
+
+        <div class="column" ondragover="allowDrop(event)" ondrop="drop(event)">
+            <h2>In Progress</h2>
+        </div>
+
+        <div class="column" ondragover="allowDrop(event)" ondrop="drop(event)">
+            <h2>Done</h2>
+        </div>
+    </div>
+
+    <script>
+        let draggedTask = null;
+
+        function addTask(){
+            const input = document.getElementById("taskInput");
+            const text = input.value.trim();
+
+            if(text === ""){
+                alert("Please enter a task");
+                return;
+            }
+
+            const task = document.createElement("div");
+            task.className = "task";
+            task.draggable = true;
+            task.innerHTML = `<span>${text}</span><span class="delete">✖</span>`;
+
+            task.querySelector(".delete").onclick = () => task.remove();
+
+            task.ondragstart = () => draggedTask = task;
+            task.ondragend = () => draggedTask = null;
+
+            document.querySelector(".column").appendChild(task);
+            input.value = "";
+        }
+
+        function allowDrop(event){
+            event.preventDefault();
+        }
+
+        function drop(event){
+            event.preventDefault();
+            if(draggedTask){
+                event.currentTarget.appendChild(draggedTask);
+            }
+        }
+    </script>
+
+</body>
+</html>
